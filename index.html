@@ -308,33 +308,58 @@
 
     .stipend-card {
       background: var(--white);
-      border-radius: 12px;
-      padding: 28px 20px;
+      border-radius: 20px;
+      padding: 36px 24px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(13, 31, 60, 0.05);
+      box-shadow: 0 8px 28px rgba(13, 31, 60, 0.07);
       border: 1px solid #e9ecf2;
-      transition: transform 0.2s;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stipend-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
     }
 
     .stipend-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-6px);
       border-color: var(--gold);
+      box-shadow: 0 16px 40px rgba(201, 168, 76, 0.18);
+    }
+
+    .stipend-card:hover::after {
+      transform: scaleX(1);
     }
 
     .stipend-year {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       color: var(--muted);
       font-weight: 600;
+      background: var(--cream);
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
     }
 
     .stipend-amount {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem;
+      font-size: 2.8rem;
       font-weight: 700;
       color: var(--navy);
-      margin: 12px 0 8px;
+      margin: 8px 0;
+      line-height: 1;
     }
 
     .stipend-amount small {
@@ -347,6 +372,7 @@
       color: var(--gold);
       font-weight: 600;
       font-size: 0.9rem;
+      margin-top: 10px;
     }
 
     .section-title {
@@ -382,32 +408,55 @@
 
     .benefit-item {
       background: var(--white);
-      border: 1px solid var(--cream);
-      border-radius: 10px;
-      padding: 24px 16px;
+      border: 1px solid #e4e9f2;
+      border-radius: 16px;
+      padding: 32px 20px;
       text-align: center;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(13, 31, 60, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .benefit-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
     }
 
     .benefit-item:hover {
       border-color: var(--gold);
-      box-shadow: 0 8px 24px rgba(201, 168, 76, 0.1);
+      box-shadow: 0 12px 32px rgba(201, 168, 76, 0.18);
+      transform: translateY(-5px);
+    }
+
+    .benefit-item:hover::before {
+      transform: scaleX(1);
     }
 
     .benefit-icon {
-      font-size: 2.2rem;
-      margin-bottom: 12px;
+      font-size: 2.6rem;
+      margin-bottom: 14px;
+      display: block;
     }
 
     .benefit-item h4 {
-      font-size: 1.1rem;
-      margin-bottom: 6px;
+      font-size: 1.05rem;
+      margin-bottom: 8px;
       color: var(--navy);
+      font-weight: 700;
     }
 
     .benefit-item p {
       font-size: 0.85rem;
       color: var(--muted);
+      line-height: 1.5;
     }
 
     .eligibility-box {
@@ -504,6 +553,13 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+    }
+    .btn-wa:hover {
+      background: #1ebe5d;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(37, 211, 102, 0.5);
     }
 
     .btn-call {
@@ -516,6 +572,14 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(13, 31, 60, 0.25);
+    }
+    .btn-call:hover {
+      background: var(--gold);
+      color: var(--navy);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(201, 168, 76, 0.45);
     }
 
     .footer {
@@ -578,8 +642,71 @@
       }
     }
   </style>
+
+  <style>
+    #page-loader {
+      position: fixed;
+      inset: 0;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-logo {
+      width: 70px;
+      height: 70px;
+      margin-bottom: 28px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    .loader-ring {
+      width: 52px;
+      height: 52px;
+      border: 4px solid rgba(201, 168, 76, 0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    .loader-text {
+      margin-top: 20px;
+      color: var(--gold-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
+  <!-- Page Loader -->
+  <div id="page-loader">
+    <img src="logo.png" alt="LIC Logo" class="loader-logo">
+    <div class="loader-ring"></div>
+    <div class="loader-text">Loading...</div>
+  </div>
+
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        document.getElementById('page-loader').classList.add('hidden');
+      }, 600);
+    });
+  </script>
   <div class="top-bar">
     <div class="container">
       <span class="topbar-full" data-i18n="topbar_text">भारतीय जीवन बीमा निगम | LIFE INSURANCE CORPORATION OF INDIA</span>
@@ -729,7 +856,7 @@
         <p><i>✉️</i> <a href="mailto:uttam.540@rediffmail.com" style="text-decoration:none;font-weight:700;color:inherit;">uttam.540@rediffmail.com</a></p>
       </div>
       <div class="contact-actions">
-        <a href="https://wa.me/919434176532" class="btn-wa" target="_blank">💬 <span data-i18n="whatsapp">WhatsApp</span></a>
+        <a href="https://wa.me/919434176532" class="btn-wa" target="_blank"><i class="fa-brands fa-whatsapp"></i> <span data-i18n="whatsapp">WhatsApp</span></a>
         <a href="tel:+919434176532" class="btn-call">📞 <span data-i18n="call">Call Now</span></a>
       </div>
     </div>

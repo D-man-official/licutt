@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apply – LIC Advisor Application</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:  #0d1f3c;
+      --navy2: #162a4f;
+      --gold:  #c9a84c;
+      --gold2: #e8c96a;
+      --cream: #fdf8ee;
+      --white: #ffffff;
+      --text:  #1a2a44;
+      --muted: #5a6a82;
+      --error: #c0392b;
+      --success: #27ae60;
+      --border: #dde3ed;
+      --focus: rgba(201,168,76,0.35);
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 5%;
+      background: var(--navy);
+      border-bottom: 1px solid rgba(201,168,76,0.25);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; color: var(--gold2); letter-spacing: 0.5px;
+    }
+    .nav-logo span { color: white; font-weight: 300; }
+    .back-link {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none; font-size: 0.88rem;
+      display: flex; align-items: center; gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold2); }
+
+    /* LAYOUT */
+    .page-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 56px 5% 80px;
+    }
+    .page-header { text-align: center; margin-bottom: 48px; }
+    .page-tag {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 14px; display: block;
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      color: var(--navy); line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .page-header p {
+      color: var(--muted); font-size: 0.97rem; line-height: 1.65;
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* FORM CARD */
+    .form-card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 48px 48px;
+      box-shadow: 0 8px 40px rgba(13,31,60,0.07);
+    }
+    @media(max-width:600px) { .form-card { padding: 32px 24px; } }
+
+    .form-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; color: var(--navy);
+      margin: 32px 0 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .form-section-title:first-child { margin-top: 0; }
+    .form-section-title span {
+      font-size: 1.1rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media(max-width:580px){ .form-row { grid-template-columns: 1fr; } }
+    .form-group { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 7px;
+      letter-spacing: 0.2px;
+    }
+    label .req { color: var(--gold); margin-left: 2px; }
+
+    input, select, textarea {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #f8fafd;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--focus);
+      background: var(--white);
+    }
+    input::placeholder, textarea::placeholder { color: #b0bbc8; }
+    textarea { resize: vertical; min-height: 90px; }
+    select { cursor: pointer; }
+
+    .field-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+    .field-error {
+      font-size: 0.78rem;
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+    }
+    .has-error input,
+    .has-error select,
+    .has-error textarea {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.12);
+    }
+    .has-error .field-error { display: block; }
+
+    /* SUBMIT */
+    .submit-wrap { margin-top: 36px; }
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold) 0%, #b8892e 100%);
+      color: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 16px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+    }
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(201,168,76,0.5);
+    }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .submit-note {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+
+    /* SPINNER */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(13,31,60,0.3);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* SUCCESS */
+    .success-overlay {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .success-overlay.show { display: block; animation: fadeUp 0.5s ease both; }
+    .success-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: white;
+      font-size: 2.4rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 30px rgba(39,174,96,0.35);
+    }
+    .success-overlay h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem; color: var(--navy);
+      margin-bottom: 14px;
+    }
+    .success-overlay p {
+      color: var(--muted); font-size: 0.97rem;
+      line-height: 1.65; max-width: 400px; margin: 0 auto 28px;
+    }
+    .btn-home {
+      display: inline-block;
+      background: var(--navy);
+      color: var(--gold2);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem; font-weight: 600;
+      padding: 13px 32px; border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-home:hover { background: var(--navy2); }
+
+    /* ERROR BANNER */
+    .error-banner {
+      display: none;
+      background: #fdf0ef;
+      border: 1px solid #f5c6c2;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.88rem;
+      color: var(--error);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">LIC <span>Advisor Network</span></div>
+  <a href="index.html" class="back-link">← Back to Home</a>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <span class="page-tag">Step 1 of 1</span>
+    <h1>Advisor Application Form</h1>
+    <p>Fill in your details below. Our team will review your application and contact you within 24 hours.</p>
+  </div>
+
+  <div class="form-card">
+
+    <!-- SUCCESS STATE -->
+    <div class="success-overlay" id="successMsg">
+      <div class="success-icon">✓</div>
+      <h2>Application Submitted!</h2>
+      <p>Thank you! Your application has been received. Our LIC agent will contact you on your phone/WhatsApp within 24 hours.</p>
+      <a href="index.html" class="btn-home">← Back to Home</a>
+    </div>
+
+    <!-- FORM -->
+    <form id="applicationForm">
+
+      <div class="form-section-title"><span>👤</span> Personal Information</div>
+
+      <div class="form-group" id="grp-name">
+        <label>Full Name <span class="req">*</span></label>
+        <input type="text" name="name" id="name" placeholder="e.g. Ramesh Kumar Sharma" autocomplete="name"/>
+        <span class="field-error">Please enter your full name.</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" id="grp-phone">
+          <label>Phone / WhatsApp <span class="req">*</span></label>
+          <input type="tel" name="phone" id="phone" placeholder="10-digit mobile number" maxlength="10" autocomplete="tel"/>
+          <span class="field-hint">We'll contact you on this number.</span>
+          <span class="field-error">Enter a valid 10-digit number.</span>
+        </div>
+        <div class="form-group" id="grp-email">
+          <label>Email Address</label>
+          <input type="email" name="email" id="email" placeholder="example@gmail.com" autocomplete="email"/>
+          <span class="field-error">Enter a valid email address.</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" id="grp-age">
+          <label>Age <span class="req">*</span></label>
+          <input type="number" name="age" id="age" placeholder="e.g. 28" min="18" max="70"/>
+          <span class="field-error">Age must be between 18 and 70.</span>
+        </div>
+        <div class="form-group" id="grp-gender">
+          <label>Gender <span class="req">*</span></label>
+          <select name="gender" id="gender">
+            <option value="">— Select Gender —</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <span class="field-error">Please select your gender.</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" id="grp-caste">
+          <label>Caste Category <span class="req">*</span></label>
+          <select name="caste" id="caste">
+            <option value="">— Select Category —</option>
+            <option value="General">General</option>
+            <option value="OBC">OBC</option>
+            <option value="SC">SC</option>
+            <option value="ST">ST</option>
+            <option value="Other">Other</option>
+          </select>
+          <span class="field-error">Please select your category.</span>
+        </div>
+        <div class="form-group" id="grp-qualification">
+          <label>Qualification <span class="req">*</span></label>
+          <input type="text" name="qualification" id="qualification" placeholder="e.g. B.Com, 12th Pass, MBA"/>
+          <span class="field-error">Please enter your qualification.</span>
+        </div>
+      </div>
+
+      <div class="form-section-title"><span>📍</span> Location Details</div>
+
+      <div class="form-group" id="grp-city">
+        <label>City <span class="req">*</span></label>
+        <input type="text" name="city" id="city" placeholder="e.g. Jaipur, Pune, Chennai"/>
+        <span class="field-error">Please enter your city.</span>
+      </div>
+
+      <div class="form-group" id="grp-address">
+        <label>Full Address</label>
+        <textarea name="address" id="address" placeholder="House no., Street, Area, Pincode…"></textarea>
+      </div>
+
+      <div class="submit-wrap">
+        <button type="submit" class="btn-submit" id="submitBtn">Submit My Application →</button>
+        <p class="submit-note">🔒 Your information is safe and will never be shared with third parties.</p>
+        <div class="error-banner" id="errorBanner">
+          Something went wrong while submitting. Please try again or contact us directly on WhatsApp.
+        </div>
+      </div>
+
+    </form>
+  </div><!-- /form-card -->
+</div><!-- /page-wrap -->
+
+<script>
+  // ─── CONFIGURATION ───────────────────────────────────────────────────────────
+  // STEP 1: Deploy your Google Apps Script (see google-apps-script.js)
+  // STEP 2: Paste the Web App URL here:
+  const SHEET_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  const form     = document.getElementById("applicationForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const successMsg = document.getElementById("successMsg");
+  const errorBanner = document.getElementById("errorBanner");
+
+  function showError(groupId, show) {
+    const el = document.getElementById(groupId);
+    if (!el) return;
+    if (show) el.classList.add("has-error");
+    else el.classList.remove("has-error");
+  }
+
+  function validateForm() {
+    let valid = true;
+
+    const name = document.getElementById("name").value.trim();
+    showError("grp-name", !name);
+    if (!name) valid = false;
+
+    const phone = document.getElementById("phone").value.trim();
+    showError("grp-phone", !/^\d{10}$/.test(phone));
+    if (!/^\d{10}$/.test(phone)) valid = false;
+
+    const email = document.getElementById("email").value.trim();
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError("grp-email", true); valid = false;
+    } else { showError("grp-email", false); }
+
+    const age = parseInt(document.getElementById("age").value);
+    showError("grp-age", isNaN(age) || age < 18 || age > 70);
+    if (isNaN(age) || age < 18 || age > 70) valid = false;
+
+    const gender = document.getElementById("gender").value;
+    showError("grp-gender", !gender);
+    if (!gender) valid = false;
+
+    const caste = document.getElementById("caste").value;
+    showError("grp-caste", !caste);
+    if (!caste) valid = false;
+
+    const qual = document.getElementById("qualification").value.trim();
+    showError("grp-qualification", !qual);
+    if (!qual) valid = false;
+
+    const city = document.getElementById("city").value.trim();
+    showError("grp-city", !city);
+    if (!city) valid = false;
+
+    return valid;
+  }
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    errorBanner.style.display = "none";
+    if (!validateForm()) return;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> Submitting…';
+
+    const data = {
+      timestamp:     new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      name:          document.getElementById("name").value.trim(),
+      phone:         document.getElementById("phone").value.trim(),
+      email:         document.getElementById("email").value.trim(),
+      age:           document.getElementById("age").value,
+      gender:        document.getElementById("gender").value,
+      city:          document.getElementById("city").value.trim(),
+      address:       document.getElementById("address").value.trim(),
+      qualification: document.getElementById("qualification").value.trim(),
+      caste:         document.getElementById("caste").value,
+    };
+
+    // If no URL configured, simulate success for demo purposes
+    if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+      setTimeout(() => {
+        form.style.display = "none";
+        successMsg.classList.add("show");
+        console.log("DEMO MODE – data would be sent:", data);
+      }, 1200);
+      return;
+    }
+
+    try {
+      await fetch(SHEET_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      form.style.display = "none";
+      successMsg.classList.add("show");
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = "Submit My Application →";
+      errorBanner.style.display = "block";
+      console.error("Submission error:", err);
+    }
+  });
+
+  // Live validation on blur
+  ["name","phone","age","gender","caste","qualification","city"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("blur", validateForm);
+  });
+</script>
+
+</body>
+</html>

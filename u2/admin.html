@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin – LIC Advisor Applications</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:  #0d1f3c;
+      --navy2: #162a4f;
+      --gold:  #c9a84c;
+      --gold2: #e8c96a;
+      --cream: #f0f4f9;
+      --white: #ffffff;
+      --text:  #1a2a44;
+      --muted: #5a6a82;
+      --border: #dde3ed;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 240px;
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+    }
+    .sidebar-logo h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--gold2);
+    }
+    .sidebar-logo p {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 3px;
+    }
+    .sidebar-nav { padding: 20px 12px; flex: 1; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-bottom: 2px;
+      text-decoration: none;
+    }
+    .nav-item:hover, .nav-item.active {
+      background: rgba(201,168,76,0.12);
+      color: var(--gold2);
+    }
+    .nav-item span { font-size: 1rem; }
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(201,168,76,0.15);
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* MAIN */
+    .main { flex: 1; overflow: hidden; }
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--navy);
+    }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .btn-refresh {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-refresh:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-export {
+      background: var(--gold);
+      border: none;
+      color: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-export:hover { background: var(--gold2); }
+
+    .content { padding: 28px 32px; }
+    @media(max-width:768px){
+      .sidebar { display: none; }
+      .content { padding: 20px 16px; }
+      .topbar { padding: 14px 16px; }
+    }
+
+    /* STAT CARDS */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::after {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--gold), var(--gold2));
+    }
+    .stat-label-sm {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    /* TOOLBAR */
+    .toolbar {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 20px; align-items: center;
+    }
+    .search-wrap { position: relative; flex: 1; min-width: 200px; }
+    .search-wrap input {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      padding: 9px 14px 9px 36px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      outline: none;
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .search-wrap input:focus { border-color: var(--gold); }
+    .search-icon {
+      position: absolute; left: 11px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted); font-size: 0.9rem;
+    }
+    .filter-select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      background: white;
+    }
+    .filter-select:focus { border-color: var(--gold); }
+
+    /* TABLE */
+    .table-wrap {
+      background: var(--white);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead {
+      background: #f7fafc;
+      border-bottom: 1.5px solid var(--border);
+    }
+    th {
+      text-align: left;
+      padding: 13px 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    th:hover { color: var(--gold); }
+    td {
+      padding: 13px 16px;
+      border-bottom: 1px solid #f0f4f9;
+      color: var(--text);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fdf8ee; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .badge-male   { background: #e8f4fd; color: #2980b9; }
+    .badge-female { background: #fce8f3; color: #c0306a; }
+    .badge-other  { background: #f0f0f0; color: #666; }
+
+    .phone-link {
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .phone-link:hover { color: var(--gold); }
+
+    /* EMPTY / LOADING */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state p { font-size: 0.92rem; }
+
+    .loading-row td {
+      text-align: center;
+      padding: 48px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* PAGINATION */
+    .pagination {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+    .page-btns { display: flex; gap: 6px; }
+    .page-btn {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1.5px solid var(--border);
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: var(--text);
+      background: var(--white);
+      transition: all 0.15s;
+    }
+    .page-btn:hover, .page-btn.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+    }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(13,31,60,0.6);
+      backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: 10px;
+      width: 100%; max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(13,31,60,0.3);
+      animation: fadeUp 0.3s ease;
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; color: var(--navy);
+    }
+    .modal-close {
+      background: transparent; border: none; cursor: pointer;
+      font-size: 1.3rem; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 24px; }
+    .detail-row {
+      display: flex; gap: 12px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+    }
+    .detail-label {
+      font-weight: 600; color: var(--muted);
+      min-width: 130px; font-size: 0.82rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .detail-val { color: var(--text); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PIN */
+    .pin-screen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--navy);
+    }
+    .pin-card {
+      background: var(--navy2);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 12px;
+      padding: 48px 40px;
+      text-align: center;
+      width: 100%; max-width: 380px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .pin-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; color: var(--white);
+      margin-bottom: 8px;
+    }
+    .pin-card p { color: rgba(255,255,255,0.5); font-size: 0.88rem; margin-bottom: 28px; }
+    .pin-input {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 8px;
+      text-align: center;
+      padding: 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(201,168,76,0.3);
+      border-radius: 6px;
+      color: var(--white);
+      outline: none;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    .pin-input:focus { border-color: var(--gold); }
+    .pin-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), #b8892e);
+      color: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      padding: 13px;
+      border: none; border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .pin-btn:hover { transform: translateY(-1px); }
+    .pin-error {
+      color: #e74c3c; font-size: 0.83rem; margin-top: 8px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- PIN SCREEN -->
+<div id="pinScreen" class="pin-screen">
+  <div class="pin-card">
+    <div style="font-size:2.5rem;margin-bottom:16px;">🔐</div>
+    <h2>Agent Login</h2>
+    <p>Enter your admin PIN to access the applicant dashboard.</p>
+    <input type="password" class="pin-input" id="pinInput" placeholder="••••" maxlength="6" inputmode="numeric"/>
+    <p class="pin-error" id="pinError">Incorrect PIN. Please try again.</p>
+    <button class="pin-btn" onclick="checkPin()">Access Dashboard</button>
+    <p style="margin-top:16px;font-size:0.75rem;color:rgba(255,255,255,0.25);">Default PIN: 1234 (change in code)</p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="layout" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2>LIC Admin</h2>
+      <p>Advisor Portal</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item active" href="#"><span>👥</span> Applicants</a>
+      <a class="nav-item" href="index.html"><span>🏠</span> Landing Page</a>
+      <a class="nav-item" href="form.html"><span>📋</span> View Form</a>
+      <a class="nav-item" href="#" onclick="logout()"><span>🚪</span> Logout</a>
+    </nav>
+    <div class="sidebar-footer">LIC Advisor Network © 2024</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <h1>Applicant Dashboard</h1>
+      <div class="topbar-right">
+        <button class="btn-refresh" onclick="loadData()">⟳ Refresh</button>
+        <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- STATS -->
+      <div class="stats-row" id="statsRow">
+        <div class="stat-card">
+          <div class="stat-label-sm">Total Applicants</div>
+          <div class="stat-value" id="statTotal">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label-sm">This Week</div>
+          <div class="stat-value" id="statWeek">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label-sm">Cities</div>
+          <div class="stat-value" id="statCities">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label-sm">Female Applicants</div>
+          <div class="stat-value" id="statFemale">—</div>
+        </div>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search by name, phone, city…" oninput="filterTable()"/>
+        </div>
+        <select class="filter-select" id="filterGender" onchange="filterTable()">
+          <option value="">All Genders</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+        <select class="filter-select" id="filterCaste" onchange="filterTable()">
+          <option value="">All Categories</option>
+          <option value="General">General</option>
+          <option value="OBC">OBC</option>
+          <option value="SC">SC</option>
+          <option value="ST">ST</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortTable('name')">#  Name ↕</th>
+                <th>Phone</th>
+                <th onclick="sortTable('city')">City ↕</th>
+                <th onclick="sortTable('age')">Age ↕</th>
+                <th>Gender</th>
+                <th>Qualification</th>
+                <th>Caste</th>
+                <th onclick="sortTable('timestamp')">Date ↕</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr class="loading-row"><td colspan="9">Loading applicants…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span id="pageInfo">Showing 0 of 0 entries</span>
+          <div class="page-btns" id="pageBtns"></div>
+        </div>
+      </div>
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <h3 id="modalName">Applicant Details</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+  // ─── CONFIGURATION ───────────────────────────────────────────────────────────
+  const ADMIN_PIN  = "1234"; // Change this to your desired PIN
+  const SHEET_URL  = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE"; // Same URL as form.html
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  const ROWS_PER_PAGE = 10;
+  let allData      = [];
+  let filteredData = [];
+  let currentPage  = 1;
+  let sortKey      = "timestamp";
+  let sortDir      = -1;
+
+  // PIN
+  function checkPin() {
+    const val = document.getElementById("pinInput").value;
+    if (val === ADMIN_PIN) {
+      document.getElementById("pinScreen").style.display = "none";
+      document.getElementById("dashboard").style.display = "flex";
+      loadData();
+    } else {
+      document.getElementById("pinError").style.display = "block";
+    }
+  }
+  document.getElementById("pinInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkPin();
+  });
+  function logout() {
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("pinScreen").style.display = "flex";
+    document.getElementById("pinInput").value = "";
+  }
+
+  // DEMO DATA (shown when no sheet URL configured)
+  const DEMO_DATA = [
+    { timestamp:"12/03/2024, 09:15:00", name:"Priya Sharma",      phone:"9876543210", email:"priya@gmail.com",   age:"27", gender:"Female", city:"Jaipur",   address:"15 Bani Park", qualification:"B.Com",    caste:"General" },
+    { timestamp:"12/03/2024, 10:30:00", name:"Ramesh Verma",      phone:"9123456780", email:"ramesh@yahoo.com", age:"34", gender:"Male",   city:"Jodhpur",  address:"22 Shastri Nagar", qualification:"BA",    caste:"OBC" },
+    { timestamp:"11/03/2024, 14:22:00", name:"Sunita Devi",       phone:"9988776655", email:"",                  age:"42", gender:"Female", city:"Kota",     address:"4 Talwandi",   qualification:"12th Pass", caste:"SC" },
+    { timestamp:"11/03/2024, 16:05:00", name:"Anil Kumar Singh",  phone:"9012345678", email:"anil@outlook.com",  age:"31", gender:"Male",   city:"Ajmer",    address:"7 Civil Lines",  qualification:"MBA",      caste:"General" },
+    { timestamp:"10/03/2024, 11:00:00", name:"Kavita Patel",      phone:"9765432109", email:"kavita@gmail.com",  age:"29", gender:"Female", city:"Bikaner",  address:"9 Rani Bazar",   qualification:"BCA",      caste:"OBC" },
+    { timestamp:"10/03/2024, 13:45:00", name:"Mahesh Choudhary",  phone:"9654321098", email:"",                  age:"55", gender:"Male",   city:"Udaipur",  address:"3 Fateh Sagar Rd", qualification:"10th Pass",caste:"ST" },
+    { timestamp:"09/03/2024, 09:00:00", name:"Geeta Rathore",     phone:"9543210987", email:"geeta@rediff.com",  age:"38", gender:"Female", city:"Jaipur",   address:"Mansarovar A-5",  qualification:"B.Sc",     caste:"General" },
+    { timestamp:"09/03/2024, 17:30:00", name:"Dinesh Meena",      phone:"9432109876", email:"",                  age:"24", gender:"Male",   city:"Alwar",    address:"Krishna Nagar 12", qualification:"12th Pass", caste:"SC" },
+    { timestamp:"08/03/2024, 10:15:00", name:"Rekha Kumari",      phone:"9321098765", email:"rekha@gmail.com",   age:"46", gender:"Female", city:"Bharatpur", address:"Station Road 7",  qualification:"B.Ed",     caste:"OBC" },
+    { timestamp:"08/03/2024, 12:00:00", name:"Vijay Lal Gupta",   phone:"9210987654", email:"vijay@gmail.com",   age:"33", gender:"Male",   city:"Jaipur",   address:"Vaishali Nagar B-2", qualification:"LLB",   caste:"General" },
+    { timestamp:"07/03/2024, 15:20:00", name:"Sarla Bansal",      phone:"9109876543", email:"",                  age:"51", gender:"Female", city:"Sikar",    address:"Fatehpur Road",    qualification:"BA",       caste:"General" },
+    { timestamp:"06/03/2024, 11:40:00", name:"Rakesh Jain",       phone:"9098765432", email:"rakesh@jain.com",   age:"26", gender:"Male",   city:"Tonk",     address:"Market Square 3",  qualification:"B.Com",    caste:"OBC" },
+  ];
+
+  async function loadData() {
+    document.getElementById("tableBody").innerHTML =
+      '<tr class="loading-row"><td colspan="9">Loading applicants…</td></tr>';
+
+    if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+      // Demo mode
+      setTimeout(() => {
+        allData = DEMO_DATA;
+        updateStats();
+        filteredData = [...allData];
+        currentPage = 1;
+        renderTable();
+      }, 800);
+      return;
+    }
+
+    try {
+      const res = await fetch(SHEET_URL + "?action=get");
+      const json = await res.json();
+      allData = json.data || [];
+      updateStats();
+      filteredData = [...allData];
+      currentPage = 1;
+      renderTable();
+    } catch(e) {
+      document.getElementById("tableBody").innerHTML =
+        '<tr class="loading-row"><td colspan="9">⚠️ Could not load data. Check your Sheet URL.</td></tr>';
+    }
+  }
+
+  function updateStats() {
+    document.getElementById("statTotal").textContent = allData.length;
+    const now = new Date();
+    const weekAgo = new Date(now - 7 * 86400000);
+    const thisWeek = allData.filter(r => {
+      try { return new Date(r.timestamp) > weekAgo; } catch { return false; }
+    }).length;
+    document.getElementById("statWeek").textContent = thisWeek;
+    const cities = new Set(allData.map(r => r.city?.trim()).filter(Boolean));
+    document.getElementById("statCities").textContent = cities.size;
+    const female = allData.filter(r => r.gender === "Female").length;
+    document.getElementById("statFemale").textContent = female;
+  }
+
+  function filterTable() {
+    const q = document.getElementById("searchInput").value.toLowerCase();
+    const g = document.getElementById("filterGender").value;
+    const c = document.getElementById("filterCaste").value;
+    filteredData = allData.filter(r => {
+      const matchQ = !q || [r.name,r.phone,r.city,r.email].some(v => (v||"").toLowerCase().includes(q));
+      const matchG = !g || r.gender === g;
+      const matchC = !c || r.caste === c;
+      return matchQ && matchG && matchC;
+    });
+    currentPage = 1;
+    renderTable();
+  }
+
+  function sortTable(key) {
+    if (sortKey === key) sortDir *= -1;
+    else { sortKey = key; sortDir = 1; }
+    filteredData.sort((a,b) => {
+      const av = (a[key] || "").toString().toLowerCase();
+      const bv = (b[key] || "").toString().toLowerCase();
+      return av < bv ? -sortDir : av > bv ? sortDir : 0;
+    });
+    renderTable();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById("tableBody");
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    const page  = filteredData.slice(start, start + ROWS_PER_PAGE);
+
+    if (!page.length) {
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="9"><div class="empty-state"><div class="empty-icon">📭</div><p>No applicants found.</p></div></td></tr>';
+      renderPagination();
+      return;
+    }
+
+    tbody.innerHTML = page.map((r, i) => {
+      const idx = start + i + 1;
+      const gBadge = r.gender === "Male" ? "badge-male" : r.gender === "Female" ? "badge-female" : "badge-other";
+      const dateStr = r.timestamp ? r.timestamp.split(",")[0] : "—";
+      return `<tr onclick="showDetail(${start + i})" style="cursor:pointer;">
+        <td><strong>${idx}.</strong> ${esc(r.name)}</td>
+        <td><a class="phone-link" href="tel:${esc(r.phone)}" onclick="event.stopPropagation()">📱 ${esc(r.phone)}</a></td>
+        <td>${esc(r.city)}</td>
+        <td>${esc(r.age)}</td>
+        <td><span class="badge ${gBadge}">${esc(r.gender)}</span></td>
+        <td>${esc(r.qualification)}</td>
+        <td>${esc(r.caste)}</td>
+        <td>${dateStr}</td>
+        <td><button style="background:var(--navy);color:white;border:none;padding:5px 12px;border-radius:4px;font-size:0.77rem;cursor:pointer;" onclick="event.stopPropagation();showDetail(${start+i})">View</button></td>
+      </tr>`;
+    }).join("");
+    renderPagination();
+  }
+
+  function renderPagination() {
+    const total = filteredData.length;
+    const pages = Math.ceil(total / ROWS_PER_PAGE);
+    const start = (currentPage - 1) * ROWS_PER_PAGE + 1;
+    const end   = Math.min(currentPage * ROWS_PER_PAGE, total);
+    document.getElementById("pageInfo").textContent = total
+      ? `Showing ${start}–${end} of ${total} entries`
+      : "No entries found";
+
+    const container = document.getElementById("pageBtns");
+    container.innerHTML = "";
+    for (let i = 1; i <= pages; i++) {
+      const btn = document.createElement("button");
+      btn.className = "page-btn" + (i === currentPage ? " active" : "");
+      btn.textContent = i;
+      btn.onclick = () => { currentPage = i; renderTable(); };
+      container.appendChild(btn);
+    }
+  }
+
+  function showDetail(idx) {
+    const r = filteredData[idx];
+    document.getElementById("modalName").textContent = r.name || "Applicant Details";
+    document.getElementById("modalBody").innerHTML = `
+      ${dRow("Full Name", r.name)}
+      ${dRow("Phone / WhatsApp", `<a href="tel:${esc(r.phone)}" style="color:var(--navy);font-weight:600;">📱 ${esc(r.phone)}</a>`)}
+      ${dRow("Email", r.email || "—")}
+      ${dRow("Age", r.age)}
+      ${dRow("Gender", r.gender)}
+      ${dRow("Caste Category", r.caste)}
+      ${dRow("Qualification", r.qualification)}
+      ${dRow("City", r.city)}
+      ${dRow("Full Address", r.address || "—")}
+      ${dRow("Applied On", r.timestamp || "—")}
+      <div style="margin-top:20px;">
+        <a href="https://wa.me/91${r.phone}" target="_blank" style="display:inline-block;background:#25d366;color:white;padding:10px 20px;border-radius:6px;text-decoration:none;font-size:0.88rem;font-weight:600;">💬 WhatsApp</a>
+        <a href="tel:${r.phone}" style="display:inline-block;margin-left:10px;background:var(--navy);color:var(--gold2);padding:10px 20px;border-radius:6px;text-decoration:none;font-size:0.88rem;font-weight:600;">📞 Call</a>
+      </div>
+    `;
+    document.getElementById("modalOverlay").classList.add("open");
+  }
+  function dRow(label, val) {
+    return `<div class="detail-row"><span class="detail-label">${label}</span><span class="detail-val">${val || "—"}</span></div>`;
+  }
+  function closeModal(e) {
+    if (!e || e.target === document.getElementById("modalOverlay")) {
+      document.getElementById("modalOverlay").classList.remove("open");
+    }
+  }
+
+  function exportCSV() {
+    if (!filteredData.length) { alert("No data to export."); return; }
+    const headers = ["Timestamp","Name","Phone","Email","Age","Gender","City","Address","Qualification","Caste"];
+    const rows = filteredData.map(r =>
+      [r.timestamp,r.name,r.phone,r.email,r.age,r.gender,r.city,r.address,r.qualification,r.caste]
+        .map(v => `"${(v||"").replace(/"/g,'""')}"`)
+        .join(",")
+    );
+    const csv = [headers.join(","), ...rows].join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
+    a.download = "lic_applicants_" + new Date().toISOString().slice(0,10) + ".csv";
+    a.click();
+  }
+
+  function esc(s) {
+    if (!s) return "";
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+</script>
+
+</body>
+</html>

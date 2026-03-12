@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIC Mahila Career Agent | Bima Sakhi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: #0d1f3c;
+      --navy-light: #162a4f;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --cream: #f0f4f9;
+      --white: #ffffff;
+      --text: #1a2a44;
+      --muted: #5a6a82;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header & top bar unified navy */
+    .top-bar {
+      background: var(--navy);
+      color: white;
+      padding: 12px 0;
+      font-size: 0.85rem;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .top-bar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .top-bar a {
+      color: var(--gold-light);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .top-bar a:hover {
+      text-decoration: underline;
+    }
+
+    /* Language toggle button */
+    .lang-toggle {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-left: 12px;
+    }
+    .lang-toggle:hover {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    /* Main header now navy to match hero */
+    .main-header {
+      background: var(--navy);
+      box-shadow: 0 4px 20px rgba(13, 31, 60, 0.3);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .main-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .logo h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white; /* changed to white */
+      line-height: 1.2;
+    }
+
+    .logo span {
+      color: var(--gold);
+      font-size: 0.9rem;
+      font-weight: 400;
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: white; /* white nav text */
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .btn-outline {
+      border: 1.5px solid var(--gold);
+      background: transparent;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      color: white; /* white text on navy */
+    }
+
+    .btn-outline:hover {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    /* Hero unchanged (already navy) */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: white;
+      padding: 60px 0 80px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "LIC";
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      font-size: 12rem;
+      font-weight: 700;
+      color: rgba(201, 168, 76, 0.05);
+      font-family: 'Playfair Display', serif;
+      pointer-events: none;
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .hero h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .hero h2 span {
+      color: var(--gold);
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 24px;
+      max-width: 500px;
+    }
+
+    .hero-highlight {
+      background: rgba(201, 168, 76, 0.15);
+      border-left: 4px solid var(--gold);
+      padding: 16px 24px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 24px;
+    }
+
+    .hero-highlight strong {
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 14px 36px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 8px 20px rgba(201, 168, 76, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(201, 168, 76, 0.4);
+    }
+
+    .stats-mini {
+      display: flex;
+      gap: 32px;
+      margin-top: 32px;
+    }
+
+    .stat-item h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .stipend-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin: 48px 0;
+    }
+
+    .stipend-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(13, 31, 60, 0.05);
+      border: 1px solid #e9ecf2;
+      transition: transform 0.2s;
+    }
+
+    .stipend-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold);
+    }
+
+    .stipend-year {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .stipend-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 12px 0 8px;
+    }
+
+    .stipend-amount small {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .stipend-note {
+      color: var(--gold);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--navy);
+      margin-bottom: 12px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60%;
+      height: 3px;
+      background: var(--gold);
+      margin-top: 8px;
+    }
+
+    .section-subhead {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
+    }
+
+    .benefit-item {
+      background: var(--white);
+      border: 1px solid var(--cream);
+      border-radius: 10px;
+      padding: 24px 16px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .benefit-item:hover {
+      border-color: var(--gold);
+      box-shadow: 0 8px 24px rgba(201, 168, 76, 0.1);
+    }
+
+    .benefit-icon {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+
+    .benefit-item h4 {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+      color: var(--navy);
+    }
+
+    .benefit-item p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .eligibility-box {
+      background: var(--navy);
+      color: white;
+      padding: 40px;
+      border-radius: 16px;
+      margin: 48px 0;
+      background-image: radial-gradient(circle at 100% 0%, rgba(201,168,76,0.1) 0%, transparent 50%);
+    }
+
+    .eligibility-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 24px;
+    }
+
+    .eligibility-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      list-style: none;
+    }
+
+    .eligibility-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+    }
+
+    .eligibility-list li::before {
+      content: "✔";
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .contact-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--gold);
+      margin: 40px 0 60px;
+      box-shadow: 0 20px 40px rgba(13, 31, 60, 0.1);
+    }
+
+    .contact-details h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .contact-details .title {
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+
+    .contact-details p {
+      margin: 12px 0;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .contact-details i {
+      color: var(--gold);
+      font-style: normal;
+      font-size: 1.2rem;
+    }
+
+    .contact-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-wa {
+      background: #25d366;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-call {
+      background: var(--navy);
+      color: var(--gold);
+      padding: 12px 28px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 24px 0;
+      font-size: 0.85rem;
+      border-top: 2px solid var(--gold);
+    }
+
+    @media (max-width: 768px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+      }
+      .hero h2 {
+        font-size: 2rem;
+      }
+      .stipend-grid {
+        grid-template-columns: 1fr;
+      }
+      .contact-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .nav-links {
+        display: none;
+      }
+      
+      
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container">
+      <span data-i18n="topbar_text">भारतीय जीवन बीमा निगम | LIFE INSURANCE CORPORATION OF INDIA</span>
+      <div style="display: flex; align-items: center;">
+        <a href="admin.html" data-i18n="admin_link">Admin →</a>
+        <button class="lang-toggle" id="langToggle">বাংলা</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="container">
+      <div class="logo">
+        <h1>LIC Bima Sakhi</h1>
+        <span data-i18n="logo_sub">Mahila Career Agent Drive</span>
+      </div>
+      <div class="nav-links">
+        <a href="./index.html" data-i18n="nav_home">Home</a>
+        <a href="#benefits" data-i18n="nav_benefits">Benefits</a>
+        <a href="#eligibility" data-i18n="nav_eligibility">Eligibility</a>
+        <a href="#contact" data-i18n="nav_contact">Contact</a>
+        <a href="form.html" class="btn-outline" data-i18n="nav_apply">Apply Now</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div>
+        <h2>
+          <span data-i18n="hero_span">SPECIAL DRIVE FOR ASPIRING</span>
+          <span data-i18n="hero_title">WOMEN</span>
+        </h2>
+        <p data-i18n="hero_desc">LIC introduces <strong>Mahila Career Agent (Bima Sakhi)</strong> – a golden opportunity for women to build a rewarding career with India's most trusted life insurer.</p>
+        <div class="hero-highlight">
+          <strong data-i18n="hero_qual">Qualification:</strong> <span data-i18n="hero_qual_value">10th Pass | Full Time / Part Time</span>
+        </div>
+        <div class="stats-mini">
+          <div class="stat-item">
+            <h3>7000</h3>
+            <p data-i18n="stipend_1">1st Year Stipend</p>
+          </div>
+          <div class="stat-item">
+            <h3>6000</h3>
+            <p data-i18n="stipend_2">2nd Year Stipend</p>
+          </div>
+          <div class="stat-item">
+            <h3>5000</h3>
+            <p data-i18n="stipend_3">3rd Year Stipend</p>
+          </div>
+        </div>
+        <a href="form.html" class="btn-primary" style="margin-top: 24px;" data-i18n="hero_btn">Apply for Bima Sakhi</a>
+      </div>
+     <div style="text-align:center; position:relative;">
+
+  <img src="women logo.png"
+       style="
+       width:400px;
+       max-width:100%;
+       height:auto;
+       filter: drop-shadow(0 15px 35px rgba(0,0,0,0.45));
+       position:relative;
+       z-index:2;
+       "
+       alt="Women">
+
+  <div style="
+      position:absolute;
+      width:280px;
+      height:280px;
+      background: radial-gradient(circle, rgba(201,168,76,0.25) 0%, rgba(201,168,76,0.05) 60%, transparent 80%);
+      border-radius:50%;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-40%);
+      z-index:1;
+  "></div>
+
+  <p style="font-size:0.9rem;margin-top:20px;color:rgba(255,255,255,0.5);" data-i18n="hero_footer">
+  Empowering women • Building India
+  </p>
+
+</div>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- Stipend section -->
+    <h2 class="section-title" data-i18n="stipend_title">Stipend for 3 Years</h2>
+    <div class="section-subhead" data-i18n="stipend_sub">(Plus attractive commission on every policy)</div>
+    <div class="stipend-grid">
+      <div class="stipend-card">
+        <div class="stipend-year" data-i18n="year1">1st Year</div>
+        <div class="stipend-amount">₹7,000 <small data-i18n="per_month">/month</small></div>
+        <div class="stipend-note" data-i18n="plus_comm">+ Commission</div>
+      </div>
+      <div class="stipend-card">
+        <div class="stipend-year" data-i18n="year2">2nd Year</div>
+        <div class="stipend-amount">₹6,000 <small data-i18n="per_month">/month</small></div>
+        <div class="stipend-note" data-i18n="plus_comm">+ Commission</div>
+      </div>
+      <div class="stipend-card">
+        <div class="stipend-year" data-i18n="year3">3rd Year</div>
+        <div class="stipend-amount">₹5,000 <small data-i18n="per_month">/month</small></div>
+        <div class="stipend-note" data-i18n="plus_comm">+ Commission</div>
+      </div>
+    </div>
+
+    <!-- Benefits -->
+    <h2 class="section-title" id="benefits" data-i18n="benefits_title">Exclusive Benefits</h2>
+    <div class="benefits-grid">
+      <div class="benefit-item"><div class="benefit-icon">🏡</div><h4 data-i18n="benefit1">Housing Loan</h4><p data-i18n="benefit1_desc">Subsidised interest rates</p></div>
+      <div class="benefit-item"><div class="benefit-icon">🛵</div><h4 data-i18n="benefit2">Two / Four Wheeler</h4><p data-i18n="benefit2_desc">Interest‑free loan</p></div>
+      <div class="benefit-item"><div class="benefit-icon">💰</div><h4 data-i18n="benefit3">Subsidised Loans</h4><p data-i18n="benefit3_desc">Personal & business</p></div>
+      <div class="benefit-item"><div class="benefit-icon">🛡️</div><h4 data-i18n="benefit4">Group Insurance</h4><p data-i18n="benefit4_desc">Life & health cover</p></div>
+      <div class="benefit-item"><div class="benefit-icon">🏥</div><h4 data-i18n="benefit5">Mediclaim</h4><p data-i18n="benefit5_desc">For you & family</p></div>
+      <div class="benefit-item"><div class="benefit-icon">📈</div><h4 data-i18n="benefit6">Gratuity</h4><p data-i18n="benefit6_desc">And many more...</p></div>
+    </div>
+
+    <!-- Eligibility -->
+    <div class="eligibility-box" id="eligibility">
+      <h3 data-i18n="eligibility_title">Who can apply?</h3>
+      <ul class="eligibility-list">
+        <li data-i18n="elig1">Housewives</li>
+        <li data-i18n="elig2">Private Employees</li>
+        <li data-i18n="elig3">Marketing Professionals</li>
+        <li data-i18n="elig4">Casual / Contract Staff</li>
+        <li data-i18n="elig5">College Students</li>
+        <li data-i18n="elig6">Self Employed</li>
+      </ul>
+      <p style="margin-top: 24px; font-size: 0.95rem; opacity: 0.8;" data-i18n="elig_footer">Minimum qualification: <strong>10th Pass</strong> | Full time or Part time options available.</p>
+    </div>
+
+    <!-- Contact area -->
+    <div class="contact-card" id="contact">
+      <div class="contact-details">
+        <h3>Uttam Kumar Das</h3>
+        <div class="title" data-i18n="contact_title">Senior Business Associate (SBA) & Development Officer</div>
+        <p><i>📍</i> <span data-i18n="contact_addr">LIC of India, Raiganj Branch</span></p>
+        <p><i>📞</i> <strong>9434176532</strong>  |  7001856411</p>
+        <p><i>✉️</i> uttam.540@rediffmail.com</p>
+      </div>
+      <div class="contact-actions">
+        <a href="https://wa.me/919434176532" class="btn-wa" target="_blank">💬 <span data-i18n="whatsapp">WhatsApp</span></a>
+        <a href="tel:+919434176532" class="btn-call">📞 <span data-i18n="call">Call Now</span></a>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+      <a href="form.html" class="btn-primary" style="font-size: 1.1rem; padding: 16px 48px;" data-i18n="footer_btn">Apply for Bima Sakhi</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p data-i18n="footer1">LIC Advisor Network © 2024 | Official recruitment drive | Raiganj Branch</p>
+      <p style="margin-top: 8px;" data-i18n="footer2">Life Insurance Corporation of India • An equal opportunity employer</p>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      // translations
+      const translations = {
+        en: {
+          topbar_text: "भारतीय जीवन बीमा निगम | LIFE INSURANCE CORPORATION OF INDIA",
+          admin_link: "Admin →",
+          logo_sub: "Mahila Career Agent Drive",
+          nav_home: "Home",
+          nav_benefits: "Benefits",
+          nav_eligibility: "Eligibility",
+          nav_contact: "Contact",
+          nav_apply: "Apply Now",
+          hero_span: "SPECIAL DRIVE FOR ASPIRING",
+          hero_title: "WOMEN",
+          hero_desc: "LIC introduces Mahila Career Agent (Bima Sakhi) – a golden opportunity for women to build a rewarding career with India's most trusted life insurer.",
+          hero_qual: "Qualification:",
+          hero_qual_value: "10th Pass | Full Time / Part Time",
+          stipend_1: "1st Year Stipend",
+          stipend_2: "2nd Year Stipend",
+          stipend_3: "3rd Year Stipend",
+          hero_btn: "Apply for Bima Sakhi",
+          hero_footer: "Empowering women • Building India",
+          stipend_title: "Stipend for 3 Years",
+          stipend_sub: "(Plus attractive commission on every policy)",
+          year1: "1st Year",
+          year2: "2nd Year",
+          year3: "3rd Year",
+          per_month: "/month",
+          plus_comm: "+ Commission",
+          benefits_title: "Exclusive Benefits",
+          benefit1: "Housing Loan",
+          benefit1_desc: "Subsidised interest rates",
+          benefit2: "Two / Four Wheeler",
+          benefit2_desc: "Interest‑free loan",
+          benefit3: "Subsidised Loans",
+          benefit3_desc: "Personal & business",
+          benefit4: "Group Insurance",
+          benefit4_desc: "Life & health cover",
+          benefit5: "Mediclaim",
+          benefit5_desc: "For you & family",
+          benefit6: "Gratuity",
+          benefit6_desc: "And many more...",
+          eligibility_title: "Who can apply?",
+          elig1: "Housewives",
+          elig2: "Private Employees",
+          elig3: "Marketing Professionals",
+          elig4: "Casual / Contract Staff",
+          elig5: "College Students",
+          elig6: "Self Employed",
+          elig_footer: "Minimum qualification: 10th Pass | Full time or Part time options available.",
+          contact_title: "Senior Business Associate (SBA) & Development Officer",
+          contact_addr: "LIC of India, Raiganj Branch",
+          whatsapp: "WhatsApp",
+          call: "Call Now",
+          footer_btn: "Apply for Bima Sakhi",
+          footer1: "LIC Advisor Network © 2024 | Official recruitment drive | Raiganj Branch",
+          footer2: "Life Insurance Corporation of India • An equal opportunity employer"
+        },
+        bn: {
+          topbar_text: "ভারতীয় জীবন বীমা নিগম | লাইফ ইন্স্যুরেন্স কর্পোরেশন অফ ইন্ডিয়া",
+          admin_link: "অ্যাডমিন →",
+          logo_sub: "মহিলা ক্যারিয়ার এজেন্ট ড্রাইভ",
+          nav_home: "হোম",
+          nav_benefits: "সুবিধা",
+          nav_eligibility: "যোগ্যতা",
+          nav_contact: "যোগাযোগ",
+          nav_apply: "এখনই আবেদন",
+          hero_span: "মহিলাদের জন্য বিশেষ ড্রাইভ",
+          hero_title: "বিমা সখী",
+          hero_desc: "এলআইসি মহিলা ক্যারিয়ার এজেন্ট (বিমা সখী) চালু করছে – ভারতের সবচেয়ে বিশ্বস্ত জীবন বীমা প্রতিষ্ঠানের সাথে মহিলাদের জন্য একটি সোনালী সুযোগ।",
+          hero_qual: "যোগ্যতা:",
+          hero_qual_value: "দশম শ্রেণী পাস | পূর্ণকালীন / খণ্ডকালীন",
+          stipend_1: "প্রথম বছর ভাতা",
+          stipend_2: "দ্বিতীয় বছর ভাতা",
+          stipend_3: "তৃতীয় বছর ভাতা",
+          hero_btn: "বিমা সখীর জন্য আবেদন",
+          hero_footer: "মহিলা শক্তিশালীকরণ • ভারত গড়া",
+          stipend_title: "৩ বছরের জন্য ভাতা",
+          stipend_sub: "(প্রত্যেক পলিসিতে আকর্ষণীয় কমিশন সহ)",
+          year1: "প্রথম বছর",
+          year2: "দ্বিতীয় বছর",
+          year3: "তৃতীয় বছর",
+          per_month: "/মাস",
+          plus_comm: "+ কমিশন",
+          benefits_title: "বিশেষ সুবিধাসমূহ",
+          benefit1: "হাউজিং লোন",
+          benefit1_desc: "ভর্তুকি সুদের হার",
+          benefit2: "দুই / চার চাকার গাড়ি",
+          benefit2_desc: "সুদমুক্ত ঋণ",
+          benefit3: "ভর্তুকি ঋণ",
+          benefit3_desc: "ব্যক্তিগত ও ব্যবসায়িক",
+          benefit4: "গ্রুপ ইন্স্যুরেন্স",
+          benefit4_desc: "জীবন ও স্বাস্থ্য বীমা",
+          benefit5: "মেডিক্লেম",
+          benefit5_desc: "আপনার ও পরিবারের জন্য",
+          benefit6: "গ্রাচুইটি",
+          benefit6_desc: "এবং আরও অনেক...",
+          eligibility_title: "কে আবেদন করতে পারবেন?",
+          elig1: "গৃহিণী",
+          elig2: "ব্যক্তিগত কর্মচারী",
+          elig3: "মার্কেটিং পেশাদার",
+          elig4: "অস্থায়ী / চুক্তি কর্মী",
+          elig5: "কলেজ ছাত্রী",
+          elig6: "স্ব-নিযুক্ত",
+          elig_footer: "সর্বনিম্ন যোগ্যতা: দশম শ্রেণী পাস | পূর্ণকালীন বা খণ্ডকালীন সুবিধা",
+          contact_title: "সিনিয়র বিজনেস অ্যাসোসিয়েট (এসবিএ) ও ডেভেলপমেন্ট অফিসার",
+          contact_addr: "এলআইসি অফ ইন্ডিয়া, রায়গঞ্জ শাখা",
+          whatsapp: "হোয়াটসঅ্যাপ",
+          call: "এখনই কল",
+          footer_btn: "বিমা সখীর জন্য আবেদন",
+          footer1: "এলআইসি অ্যাডভাইজর নেটওয়ার্ক © ২০২৪ | অফিসিয়াল নিয়োগ ড্রাইভ | রায়গঞ্জ শাখা",
+          footer2: "লাইফ ইন্স্যুরেন্স কর্পোরেশন অফ ইন্ডিয়া • একটি সমান সুযোগের নিয়োগকর্তা"
+        }
+      };
+
+      let currentLang = 'en';
+
+      function applyLanguage(lang) {
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (translations[lang] && translations[lang][key]) {
+            // For some elements like hero_qual we need to handle nested strong? but we keep simple.
+            // Special case: hero_qual_value is separate span.
+            if (el.tagName === 'STRONG' && key === 'hero_qual') {
+              el.innerText = translations[lang][key];
+            } else {
+              el.innerText = translations[lang][key];
+            }
+          }
+        });
+        // Update toggle button text
+        const toggleBtn = document.getElementById('langToggle');
+        toggleBtn.innerText = lang === 'en' ? 'বাংলা' : 'English';
+      }
+
+      document.getElementById('langToggle').addEventListener('click', function() {
+        currentLang = currentLang === 'en' ? 'bn' : 'en';
+        applyLanguage(currentLang);
+      });
+
+      // initial apply (English)
+      applyLanguage('en');
+    })();
+  </script>
+</body>
+</html>

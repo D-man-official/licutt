@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LIC Mahila Career Agent | Bima Sakhi</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -22,6 +23,10 @@
       --white: #ffffff;
       --text: #1a2a44;
       --muted: #5a6a82;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -64,22 +69,59 @@
       text-decoration: underline;
     }
 
-    /* Language toggle button */
-    .lang-toggle {
-      background: transparent;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      padding: 4px 14px;
+    /* Admin button */
+    .admin-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(201, 168, 76, 0.12);
+      border: 1px solid rgba(201, 168, 76, 0.4);
+      color: var(--gold-light) !important;
+      padding: 7px 20px;
       border-radius: 30px;
       font-weight: 600;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      text-decoration: none !important;
       cursor: pointer;
-      transition: 0.2s;
-      margin-left: 12px;
+      transition: all 0.25s;
+      letter-spacing: 0.3px;
+    }
+    .admin-btn:hover {
+      background: rgba(201, 168, 76, 0.28);
+      border-color: var(--gold);
+      color: #fff !important;
+      text-decoration: none !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201,168,76,0.2);
+    }
+
+    /* Language toggle button */
+    .lang-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold);
+      border: none;
+      color: #111111 !important;
+      -webkit-text-fill-color: #111111;
+      padding: 7px 20px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-left: 10px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 8px rgba(201,168,76,0.35);
+    }
+    .lang-toggle::before {
+      content: "";
+      font-size: 0.75rem;
     }
     .lang-toggle:hover {
-      background: var(--gold);
-      color: var(--navy);
+      background: var(--gold-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(201,168,76,0.45);
     }
 
     /* Main header now navy to match hero */
@@ -181,18 +223,18 @@
 
     .hero h2 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.8rem;
+      font-size: 5rem;
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.1;
       margin-bottom: 16px;
     }
 
     .hero h2 span {
       color: var(--gold);
       display: block;
-      font-size: 1.8rem;
-      font-weight: 400;
-      letter-spacing: 2px;
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: 3px;
       text-transform: uppercase;
     }
 
@@ -478,6 +520,19 @@
       border-top: 2px solid var(--gold);
     }
 
+    /* Topbar text variants */
+    .topbar-short {
+      display: none;
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Header mobile lang toggle — hidden by default */
+    .lang-toggle-header {
+      display: none;
+    }
+
     @media (max-width: 768px) {
       .hero .container {
         grid-template-columns: 1fr;
@@ -495,18 +550,36 @@
       .nav-links {
         display: none;
       }
-      
-      
+
+      /* Topbar: hide full text, show short "LIC" */
+      .topbar-full {
+        display: none;
+      }
+      .topbar-short {
+        display: inline;
+      }
+
+      /* Hide lang toggle from top-bar on mobile */
+      .lang-toggle-topbar {
+        display: none;
+      }
+
+      /* Show lang toggle in header next to logo */
+      .lang-toggle-header {
+        display: inline-block;
+        margin-left: auto;
+      }
     }
   </style>
 </head>
 <body>
   <div class="top-bar">
     <div class="container">
-      <span data-i18n="topbar_text">भारतीय जीवन बीमा निगम | LIFE INSURANCE CORPORATION OF INDIA</span>
+      <span class="topbar-full" data-i18n="topbar_text">भारतीय जीवन बीमा निगम | LIFE INSURANCE CORPORATION OF INDIA</span>
+      <span class="topbar-short">भारतीय जीवन बीमा निगम | LIC</span>
       <div style="display: flex; align-items: center;">
-        <a href="admin.html" data-i18n="admin_link">Admin →</a>
-        <button class="lang-toggle" id="langToggle">বাংলা</button>
+        <a href="admin.html" class="admin-btn" data-i18n="admin_link">Admin →</a>
+        <button class="lang-toggle lang-toggle-topbar" id="langToggle"><i class="fa-solid fa-globe"></i> <span id="langToggleText">বাংলা</span></button>
       </div>
     </div>
   </div>
@@ -517,6 +590,8 @@
         <h1>LIC Bima Sakhi</h1>
         <span data-i18n="logo_sub">Mahila Career Agent Drive</span>
       </div>
+      <!-- Mobile-only lang toggle shown next to logo -->
+      <button class="lang-toggle lang-toggle-header" id="langToggleMobile"><i class="fa-solid fa-globe"></i> <span id="langToggleMobileText">বাংলা</span></button>
       <div class="nav-links">
         <a href="./index.html" data-i18n="nav_home">Home</a>
         <a href="#benefits" data-i18n="nav_benefits">Benefits</a>
@@ -641,7 +716,7 @@
         <div class="title" data-i18n="contact_title">Senior Business Associate (SBA) & Development Officer</div>
         <p><i>📍</i> <span data-i18n="contact_addr">LIC of India, Raiganj Branch</span></p>
         <p><i>📞</i> <strong>9434176532</strong>  |  7001856411</p>
-        <p><i>✉️</i> uttam.540@rediffmail.com</p>
+        <p><i>✉️</i> <a href="mailto:uttam.540@rediffmail.com">uttam.540@rediffmail.com</a></p>
       </div>
       <div class="contact-actions">
         <a href="https://wa.me/919434176532" class="btn-wa" target="_blank">💬 <span data-i18n="whatsapp">WhatsApp</span></a>
@@ -661,7 +736,7 @@
     </div>
   </footer>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     (function() {
       // translations
       const translations = {
@@ -794,17 +869,29 @@
           }
         });
         // Update toggle button text
-        const toggleBtn = document.getElementById('langToggle');
+        const toggleBtn = document.getElementById('langToggleText');
         toggleBtn.innerText = lang === 'en' ? 'বাংলা' : 'English';
       }
 
       document.getElementById('langToggle').addEventListener('click', function() {
         currentLang = currentLang === 'en' ? 'bn' : 'en';
         applyLanguage(currentLang);
+        // Sync mobile button text
+        const mobileBtn = document.getElementById('langToggleMobileText');
+        if (mobileBtn) mobileBtn.innerText = currentLang === 'en' ? 'বাংলা' : 'English';
       });
 
-      // initial apply (English)
-      applyLanguage('en');
+      // Mobile header button mirrors the same toggle
+      const mobileToggle = document.getElementById('langToggleMobile');
+      if (mobileToggle) {
+        mobileToggle.addEventListener('click', function() {
+          currentLang = currentLang === 'en' ? 'bn' : 'en';
+          applyLanguage(currentLang);
+          // Sync topbar button text
+          document.getElementById('langToggleText').innerText = currentLang === 'en' ? 'বাংলা' : 'English';
+          document.getElementById('langToggleMobileText').innerText = currentLang === 'en' ? 'বাংলা' : 'English';
+        });
+      }
     })();
   </script>
 </body>

@@ -29,7 +29,6 @@
       min-height: 100vh;
     }
 
-    /* NAV */
     nav {
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 5%;
@@ -49,7 +48,6 @@
     }
     .back-link:hover { color: var(--gold2); }
 
-    /* LAYOUT */
     .page-wrap {
       max-width: 780px;
       margin: 0 auto;
@@ -72,7 +70,6 @@
       max-width: 480px; margin: 0 auto;
     }
 
-    /* FORM CARD */
     .form-card {
       background: var(--white);
       border-radius: 12px;
@@ -90,11 +87,6 @@
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; gap: 10px;
     }
-    .form-section-title:first-child { margin-top: 0; }
-    .form-section-title span {
-      font-size: 1.1rem;
-    }
-
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -154,7 +146,6 @@
     }
     .has-error .field-error { display: block; }
 
-    /* SUBMIT */
     .submit-wrap { margin-top: 36px; }
     .btn-submit {
       width: 100%;
@@ -183,7 +174,6 @@
       margin-top: 12px;
     }
 
-    /* SPINNER */
     .spinner {
       display: inline-block;
       width: 16px; height: 16px;
@@ -196,7 +186,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* SUCCESS */
     .success-overlay {
       display: none;
       text-align: center;
@@ -234,7 +223,6 @@
     }
     .btn-home:hover { background: var(--navy2); }
 
-    /* ERROR BANNER */
     .error-banner {
       display: none;
       background: #fdf0ef;
@@ -276,27 +264,30 @@
       <a href="index.html" class="btn-home">← Back to Home</a>
     </div>
 
-    <!-- FORM -->
-    <form id="applicationForm">
+    <!-- FORM
+         Note: action kept as fallback (progressive enhancement).
+         If you want to use different SheetDB endpoint, change the action and SHEETDB_URL below.
+    -->
+    <form id="applicationForm" action="https://sheetdb.io/api/v1/ymihi2axe7v47" method="post" novalidate>
 
       <div class="form-section-title"><span>👤</span> Personal Information</div>
 
       <div class="form-group" id="grp-name">
         <label>Full Name <span class="req">*</span></label>
-        <input type="text" name="name" id="name" placeholder="e.g. Ramesh Kumar Sharma" autocomplete="name"/>
+        <input type="text" name="data[Full Name]" id="name" placeholder="e.g. Ramesh Kumar Sharma" autocomplete="name"/>
         <span class="field-error">Please enter your full name.</span>
       </div>
 
       <div class="form-row">
         <div class="form-group" id="grp-phone">
           <label>Phone / WhatsApp <span class="req">*</span></label>
-          <input type="tel" name="phone" id="phone" placeholder="10-digit mobile number" maxlength="10" autocomplete="tel"/>
+          <input type="tel" name="data[Phone / Whatsapp]" id="phone" placeholder="10-digit mobile number" maxlength="10" autocomplete="tel"/>
           <span class="field-hint">We'll contact you on this number.</span>
           <span class="field-error">Enter a valid 10-digit number.</span>
         </div>
         <div class="form-group" id="grp-email">
           <label>Email Address</label>
-          <input type="email" name="email" id="email" placeholder="example@gmail.com" autocomplete="email"/>
+          <input type="email" name="data[Email Address]" id="email" placeholder="example@gmail.com" autocomplete="email"/>
           <span class="field-error">Enter a valid email address.</span>
         </div>
       </div>
@@ -304,12 +295,12 @@
       <div class="form-row">
         <div class="form-group" id="grp-age">
           <label>Age <span class="req">*</span></label>
-          <input type="number" name="age" id="age" placeholder="e.g. 28" min="18" max="70"/>
+          <input type="number" name="data[Age]" id="age" placeholder="e.g. 28" min="18" max="70"/>
           <span class="field-error">Age must be between 18 and 70.</span>
         </div>
         <div class="form-group" id="grp-gender">
           <label>Gender <span class="req">*</span></label>
-          <select name="gender" id="gender">
+          <select name="data[Gender]" id="gender">
             <option value="">— Select Gender —</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -322,7 +313,7 @@
       <div class="form-row">
         <div class="form-group" id="grp-caste">
           <label>Caste Category <span class="req">*</span></label>
-          <select name="caste" id="caste">
+          <select name="data[Caste Category]" id="caste">
             <option value="">— Select Category —</option>
             <option value="General">General</option>
             <option value="OBC">OBC</option>
@@ -334,7 +325,7 @@
         </div>
         <div class="form-group" id="grp-qualification">
           <label>Qualification <span class="req">*</span></label>
-          <input type="text" name="qualification" id="qualification" placeholder="e.g. B.Com, 12th Pass, MBA"/>
+          <input type="text" name="data[Qualification]" id="qualification" placeholder="e.g. B.Com, 12th Pass, MBA"/>
           <span class="field-error">Please enter your qualification.</span>
         </div>
       </div>
@@ -343,13 +334,13 @@
 
       <div class="form-group" id="grp-city">
         <label>City <span class="req">*</span></label>
-        <input type="text" name="city" id="city" placeholder="e.g. Jaipur, Pune, Chennai"/>
+        <input type="text" name="data[City]" id="city" placeholder="e.g. Jaipur, Pune, Chennai"/>
         <span class="field-error">Please enter your city.</span>
       </div>
 
       <div class="form-group" id="grp-address">
         <label>Full Address</label>
-        <textarea name="address" id="address" placeholder="House no., Street, Area, Pincode…"></textarea>
+        <textarea name="data[Full Address]" id="address" placeholder="House no., Street, Area, Pincode…"></textarea>
       </div>
 
       <div class="submit-wrap">
@@ -365,13 +356,11 @@
 </div><!-- /page-wrap -->
 
 <script>
-  // ─── CONFIGURATION ───────────────────────────────────────────────────────────
-  // STEP 1: Deploy your Google Apps Script (see google-apps-script.js)
-  // STEP 2: Paste the Web App URL here:
-  const SHEET_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
-  // ─────────────────────────────────────────────────────────────────────────────
+  // ====== CONFIG: replace this if you have a different SheetDB endpoint ======
+  const SHEETDB_URL = "https://sheetdb.io/api/v1/ymihi2axe7v47";
+  // ========================================================================
 
-  const form     = document.getElementById("applicationForm");
+  const form = document.getElementById("applicationForm");
   const submitBtn = document.getElementById("submitBtn");
   const successMsg = document.getElementById("successMsg");
   const errorBanner = document.getElementById("errorBanner");
@@ -399,7 +388,8 @@
       showError("grp-email", true); valid = false;
     } else { showError("grp-email", false); }
 
-    const age = parseInt(document.getElementById("age").value);
+    const ageVal = document.getElementById("age").value;
+    const age = parseInt(ageVal, 10);
     showError("grp-age", isNaN(age) || age < 18 || age > 70);
     if (isNaN(age) || age < 18 || age > 70) valid = false;
 
@@ -422,55 +412,72 @@
     return valid;
   }
 
+  async function postToSheetDB(payloadObj) {
+    // SheetDB expects { data: [ { Col1: v1, ... } ] }
+    const body = JSON.stringify({ data: [ payloadObj ] });
+    const resp = await fetch(SHEETDB_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: body
+    });
+    return resp;
+  }
+
   form.addEventListener("submit", async function(e) {
     e.preventDefault();
     errorBanner.style.display = "none";
+
     if (!validateForm()) return;
 
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner"></span> Submitting…';
 
-    const data = {
-      timestamp:     new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-      name:          document.getElementById("name").value.trim(),
-      phone:         document.getElementById("phone").value.trim(),
-      email:         document.getElementById("email").value.trim(),
-      age:           document.getElementById("age").value,
-      gender:        document.getElementById("gender").value,
-      city:          document.getElementById("city").value.trim(),
-      address:       document.getElementById("address").value.trim(),
-      qualification: document.getElementById("qualification").value.trim(),
-      caste:         document.getElementById("caste").value,
+    // Collect payload with exact sheet column names
+    const dataObj = {
+      "Full Name": document.getElementById("name").value.trim(),
+      "Phone / Whatsapp": document.getElementById("phone").value.trim(),
+      "Email Address": document.getElementById("email").value.trim(),
+      "Age": document.getElementById("age").value,
+      "Gender": document.getElementById("gender").value,
+      "Caste Category": document.getElementById("caste").value,
+      "Qualification": document.getElementById("qualification").value.trim(),
+      "City": document.getElementById("city").value.trim(),
+      "Full Address": document.getElementById("address").value.trim(),
+      // optional: add timestamp column if your sheet has one
+      "Timestamp": new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
     };
 
-    // Save to localStorage
-    const existing = JSON.parse(localStorage.getItem("lic_applications") || "[]");
-    existing.unshift(data); // newest first
-    localStorage.setItem("lic_applications", JSON.stringify(existing));
-
-    // If no URL configured, simulate success for demo purposes
-    if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
-      setTimeout(() => {
-        form.style.display = "none";
-        successMsg.classList.add("show");
-      }, 1200);
-      return;
+    // Save to localStorage (backup)
+    try {
+      const existing = JSON.parse(localStorage.getItem("lic_applications") || "[]");
+      existing.unshift(dataObj);
+      localStorage.setItem("lic_applications", JSON.stringify(existing));
+    } catch (errLocal) {
+      console.warn("localStorage error", errLocal);
     }
 
+    // Attempt to POST to SheetDB
     try {
-      await fetch(SHEET_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      form.style.display = "none";
-      successMsg.classList.add("show");
+      const resp = await postToSheetDB(dataObj);
+
+      if (resp.ok) {
+        // success
+        form.style.display = "none";
+        successMsg.classList.add("show");
+        submitBtn.innerHTML = 'Submitted';
+      } else {
+        // server responded with error status
+        console.error("SheetDB response status:", resp.status, await resp.text());
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Submit My Application →";
+        errorBanner.style.display = "block";
+      }
     } catch (err) {
+      // network or CORS error
+      console.error("Submission error:", err);
       submitBtn.disabled = false;
       submitBtn.innerHTML = "Submit My Application →";
       errorBanner.style.display = "block";
-      console.error("Submission error:", err);
     }
   });
 

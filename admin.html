@@ -113,6 +113,27 @@
       transition: background 0.2s;
     }
     .btn-export:hover { background: var(--gold2); }
+    .btn-sheets {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: linear-gradient(135deg, #0F9D58 0%, #0b7d45 100%);
+      border: none;
+      color: #ffffff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.83rem;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(15,157,88,0.35);
+      letter-spacing: 0.2px;
+    }
+    .btn-sheets:hover {
+      box-shadow: 0 4px 16px rgba(15,157,88,0.5);
+      transform: translateY(-1px);
+      color: #ffffff;
+    }
 
     .content { padding: 28px 32px; }
     @media(max-width:768px){
@@ -440,7 +461,10 @@
       <h1>Applicant Dashboard</h1>
       <div class="topbar-right">
         <button class="btn-refresh" onclick="loadData()">⟳ Refresh</button>
-        <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+        <a class="btn-sheets" href="https://docs.google.com/spreadsheets/d/1KDASSgWklA3O9SqUpAby0O4F0fI4EhT9ldnAvWcuLRE/edit?usp=sharing" target="_blank">
+          <img src="https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_spreadsheet_x32.png" width="16" height="16" style="vertical-align:middle;margin-right:6px;" onerror="this.style.display='none'"/>
+          📊 Open Google Sheets
+        </a>
         <button class="btn-refresh" onclick="clearAllData()" style="border-color:#e74c3c;color:#e74c3c;">🗑 Clear All</button>
       </div>
     </div>
@@ -534,7 +558,7 @@
 <script>
   // ─── CONFIGURATION ───────────────────────────────────────────────────────────
   const ADMIN_PIN  = "1234"; // Change this to your desired PIN
-  const SHEET_URL  = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE"; // Same URL as form.html
+  const SHEET_URL  = "https://script.google.com/macros/s/AKfycbyFeVGBvjsfzyX0PcUHTqtG7JOaa3-9ph4aE5cWlG0MVlrrCppiHDoSoDfD6hlLpORg/exec"; // Same URL as form.html
   // ─────────────────────────────────────────────────────────────────────────────
 
   const ROWS_PER_PAGE = 10;
@@ -580,51 +604,15 @@
     { timestamp:"06/03/2024, 11:40:00", name:"Rakesh Jain",       phone:"9098765432", email:"rakesh@jain.com",   age:"26", gender:"Male",   city:"Tonk",     address:"Market Square 3",  qualification:"B.Com",    caste:"OBC" },
   ];
 
-  async function loadData() {
+  function loadData() {
     document.getElementById("tableBody").innerHTML =
       '<tr class="loading-row"><td colspan="9">Loading applicants…</td></tr>';
 
-    // Load from localStorage first
-    const localData = JSON.parse(localStorage.getItem("lic_applications") || "[]");
-
-    if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
-      setTimeout(() => {
-        // Use real localStorage data if available, else show demo data
-        allData = localData.length > 0 ? localData : DEMO_DATA;
-        updateStats();
-        filteredData = [...allData];
-        currentPage = 1;
-        renderTable();
-        // Show badge if real data
-        if (localData.length > 0) {
-          document.querySelector(".topbar h1").textContent = "Applicant Dashboard ✅";
-        }
-      }, 400);
-      return;
-    }
-
-    try {
-      const res = await fetch(SHEET_URL + "?action=get");
-      const json = await res.json();
-      // Merge: sheet data + localStorage data (deduplicate by phone+timestamp)
-      const sheetData = json.data || [];
-      const merged = [...localData, ...sheetData].filter((item, index, self) =>
-        index === self.findIndex(t => t.phone === item.phone && t.timestamp === item.timestamp)
-      );
-      allData = merged;
-      updateStats();
-      filteredData = [...allData];
-      currentPage = 1;
-      renderTable();
-    } catch(e) {
-      // Fallback to localStorage if sheet fails
-      allData = localData.length > 0 ? localData : [];
-      updateStats();
-      filteredData = [...allData];
-      currentPage = 1;
-      renderTable();
-      document.getElementById("tableBody").innerHTML += '';
-    }
+    allData = [];
+    updateStats();
+    filteredData = [];
+    currentPage = 1;
+    renderTable();
   }
 
   function updateStats() {
@@ -718,6 +706,8 @@
 
   function showDetail(idx) {
     const r = filteredData[idx];
+    // Find the real index in allData
+    const allIdx = allData.findIndex(d => d.phone === r.phone && d.timestamp === r.timestamp);
     document.getElementById("modalName").textContent = r.name || "Applicant Details";
     document.getElementById("modalBody").innerHTML = `
       ${dRow("Full Name", r.name)}
@@ -730,12 +720,29 @@
       ${dRow("City", r.city)}
       ${dRow("Full Address", r.address || "—")}
       ${dRow("Applied On", r.timestamp || "—")}
-      <div style="margin-top:20px;">
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
         <a href="https://wa.me/91${r.phone}" target="_blank" style="display:inline-block;background:#25d366;color:white;padding:10px 20px;border-radius:6px;text-decoration:none;font-size:0.88rem;font-weight:600;">💬 WhatsApp</a>
-        <a href="tel:${r.phone}" style="display:inline-block;margin-left:10px;background:var(--navy);color:var(--gold2);padding:10px 20px;border-radius:6px;text-decoration:none;font-size:0.88rem;font-weight:600;">📞 Call</a>
+        <a href="tel:${r.phone}" style="display:inline-block;background:var(--navy);color:var(--gold2);padding:10px 20px;border-radius:6px;text-decoration:none;font-size:0.88rem;font-weight:600;">📞 Call</a>
+        <button onclick="deleteEntry(${allIdx})" style="background:#e74c3c;color:white;border:none;padding:10px 20px;border-radius:6px;font-size:0.88rem;font-weight:600;cursor:pointer;">🗑 Delete</button>
       </div>
     `;
     document.getElementById("modalOverlay").classList.add("open");
+  }
+
+  function deleteEntry(idx) {
+    const r = allData[idx];
+    if (!r) return;
+    if (!confirm(`"${r.name}" কে delete করবে? এটা শুধু dashboard থেকে সরাবে।`)) return;
+
+    // Remove from allData and localStorage
+    allData.splice(idx, 1);
+    const localData = JSON.parse(localStorage.getItem("lic_applications") || "[]");
+    const updated = localData.filter(d => !(d.phone === r.phone && d.timestamp === r.timestamp));
+    localStorage.setItem("lic_applications", JSON.stringify(updated));
+
+    // Update filtered and re-render
+    filterTable();
+    closeModal();
   }
   function dRow(label, val) {
     return `<div class="detail-row"><span class="detail-label">${label}</span><span class="detail-val">${val || "—"}</span></div>`;

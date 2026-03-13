@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin – LIC Advisor Applications</title>
+  <title>Admin – LIC </title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -427,9 +427,9 @@
     </div>
     <nav class="sidebar-nav">
       <a class="nav-item active" href="#"><span>👥</span> Applicants</a>
-      <a class="nav-item" href="index.html"><span>🏠</span> Landing Page</a>
-      <a class="nav-item" href="form.html"><span>📋</span> View Form</a>
-      <a class="nav-item" href="#" onclick="logout()"><span>🚪</span> Logout</a>
+      <!-- <a class="nav-item" href="index.html"><span>🏠</span> Landing Page</a> -->
+      <!-- <a class="nav-item" href="form.html"><span>📋</span> View Form</a> -->
+      <a class="nav-item" href="./index.html" onclick="logout()"><span>🚪</span> Logout</a>
     </nav>
     <div class="sidebar-footer">LIC Advisor Network © 2024</div>
   </aside>
@@ -441,6 +441,7 @@
       <div class="topbar-right">
         <button class="btn-refresh" onclick="loadData()">⟳ Refresh</button>
         <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+        <button class="btn-refresh" onclick="clearAllData()" style="border-color:#e74c3c;color:#e74c3c;">🗑 Clear All</button>
       </div>
     </div>
 
@@ -583,29 +584,46 @@
     document.getElementById("tableBody").innerHTML =
       '<tr class="loading-row"><td colspan="9">Loading applicants…</td></tr>';
 
+    // Load from localStorage first
+    const localData = JSON.parse(localStorage.getItem("lic_applications") || "[]");
+
     if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
-      // Demo mode
       setTimeout(() => {
-        allData = DEMO_DATA;
+        // Use real localStorage data if available, else show demo data
+        allData = localData.length > 0 ? localData : DEMO_DATA;
         updateStats();
         filteredData = [...allData];
         currentPage = 1;
         renderTable();
-      }, 800);
+        // Show badge if real data
+        if (localData.length > 0) {
+          document.querySelector(".topbar h1").textContent = "Applicant Dashboard ✅";
+        }
+      }, 400);
       return;
     }
 
     try {
       const res = await fetch(SHEET_URL + "?action=get");
       const json = await res.json();
-      allData = json.data || [];
+      // Merge: sheet data + localStorage data (deduplicate by phone+timestamp)
+      const sheetData = json.data || [];
+      const merged = [...localData, ...sheetData].filter((item, index, self) =>
+        index === self.findIndex(t => t.phone === item.phone && t.timestamp === item.timestamp)
+      );
+      allData = merged;
       updateStats();
       filteredData = [...allData];
       currentPage = 1;
       renderTable();
     } catch(e) {
-      document.getElementById("tableBody").innerHTML =
-        '<tr class="loading-row"><td colspan="9">⚠️ Could not load data. Check your Sheet URL.</td></tr>';
+      // Fallback to localStorage if sheet fails
+      allData = localData.length > 0 ? localData : [];
+      updateStats();
+      filteredData = [...allData];
+      currentPage = 1;
+      renderTable();
+      document.getElementById("tableBody").innerHTML += '';
     }
   }
 
@@ -741,6 +759,17 @@
     a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
     a.download = "lic_applicants_" + new Date().toISOString().slice(0,10) + ".csv";
     a.click();
+  }
+
+  function clearAllData() {
+    if (confirm("সব application data delete করবে? এটা undo করা যাবে না।")) {
+      localStorage.removeItem("lic_applications");
+      allData = [];
+      filteredData = [];
+      updateStats();
+      renderTable();
+      document.querySelector(".topbar h1").textContent = "Applicant Dashboard";
+    }
   }
 
   function esc(s) {

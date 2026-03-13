@@ -443,12 +443,16 @@
       caste:         document.getElementById("caste").value,
     };
 
+    // Save to localStorage
+    const existing = JSON.parse(localStorage.getItem("lic_applications") || "[]");
+    existing.unshift(data); // newest first
+    localStorage.setItem("lic_applications", JSON.stringify(existing));
+
     // If no URL configured, simulate success for demo purposes
     if (SHEET_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
       setTimeout(() => {
         form.style.display = "none";
         successMsg.classList.add("show");
-        console.log("DEMO MODE – data would be sent:", data);
       }, 1200);
       return;
     }

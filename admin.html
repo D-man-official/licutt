@@ -557,233 +557,248 @@
 </div>
 
 <script>
-  // ─── CONFIGURATION ───────────────────────────────────────────────────────────
-  const ADMIN_PIN  = "1234"; // Change this to your desired PIN
-  const SHEET_URL  = "https://script.google.com/macros/s/AKfycbyFeVGBvjsfzyX0PcUHTqtG7JOaa3-9ph4aE5cWlG0MVlrrCppiHDoSoDfD6hlLpORg/exec"; // Same URL as form.html
-  // ─────────────────────────────────────────────────────────────────────────────
 
-  const ROWS_PER_PAGE = 10;
-  let allData      = [];
-  let filteredData = [];
-  let currentPage  = 1;
-  let sortKey      = "timestamp";
-  let sortDir      = -1;
+const ADMIN_PIN = "1234";
+const SHEET_URL = "https://sheetdb.io/api/v1/vqet6ai2kxe65";
 
-  // PIN
-  function checkPin() {
-    const val = document.getElementById("pinInput").value;
-    if (val === ADMIN_PIN) {
-      document.getElementById("pinScreen").style.display = "none";
-      document.getElementById("dashboard").style.display = "flex";
-      loadData();
-    } else {
-      document.getElementById("pinError").style.display = "block";
-    }
-  }
-  document.getElementById("pinInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") checkPin();
-  });
-  function logout() {
-    document.getElementById("dashboard").style.display = "none";
-    document.getElementById("pinScreen").style.display = "flex";
-    document.getElementById("pinInput").value = "";
-  }
+const ROWS_PER_PAGE = 10;
 
-  // DEMO DATA (shown when no sheet URL configured)
-  const DEMO_DATA = [
-    { timestamp:"12/03/2024, 09:15:00", name:"Priya Sharma",      phone:"9876543210", email:"priya@gmail.com",   age:"27", gender:"Female", city:"Jaipur",   address:"15 Bani Park", qualification:"B.Com",    caste:"General" },
-    { timestamp:"12/03/2024, 10:30:00", name:"Ramesh Verma",      phone:"9123456780", email:"ramesh@yahoo.com", age:"34", gender:"Male",   city:"Jodhpur",  address:"22 Shastri Nagar", qualification:"BA",    caste:"OBC" },
-    { timestamp:"11/03/2024, 14:22:00", name:"Sunita Devi",       phone:"9988776655", email:"",                  age:"42", gender:"Female", city:"Kota",     address:"4 Talwandi",   qualification:"12th Pass", caste:"SC" },
-    { timestamp:"11/03/2024, 16:05:00", name:"Anil Kumar Singh",  phone:"9012345678", email:"anil@outlook.com",  age:"31", gender:"Male",   city:"Ajmer",    address:"7 Civil Lines",  qualification:"MBA",      caste:"General" },
-    { timestamp:"10/03/2024, 11:00:00", name:"Kavita Patel",      phone:"9765432109", email:"kavita@gmail.com",  age:"29", gender:"Female", city:"Bikaner",  address:"9 Rani Bazar",   qualification:"BCA",      caste:"OBC" },
-    { timestamp:"10/03/2024, 13:45:00", name:"Mahesh Choudhary",  phone:"9654321098", email:"",                  age:"55", gender:"Male",   city:"Udaipur",  address:"3 Fateh Sagar Rd", qualification:"10th Pass",caste:"ST" },
-    { timestamp:"09/03/2024, 09:00:00", name:"Geeta Rathore",     phone:"9543210987", email:"geeta@rediff.com",  age:"38", gender:"Female", city:"Jaipur",   address:"Mansarovar A-5",  qualification:"B.Sc",     caste:"General" },
-    { timestamp:"09/03/2024, 17:30:00", name:"Dinesh Meena",      phone:"9432109876", email:"",                  age:"24", gender:"Male",   city:"Alwar",    address:"Krishna Nagar 12", qualification:"12th Pass", caste:"SC" },
-    { timestamp:"08/03/2024, 10:15:00", name:"Rekha Kumari",      phone:"9321098765", email:"rekha@gmail.com",   age:"46", gender:"Female", city:"Bharatpur", address:"Station Road 7",  qualification:"B.Ed",     caste:"OBC" },
-    { timestamp:"08/03/2024, 12:00:00", name:"Vijay Lal Gupta",   phone:"9210987654", email:"vijay@gmail.com",   age:"33", gender:"Male",   city:"Jaipur",   address:"Vaishali Nagar B-2", qualification:"LLB",   caste:"General" },
-    { timestamp:"07/03/2024, 15:20:00", name:"Sarla Bansal",      phone:"9109876543", email:"",                  age:"51", gender:"Female", city:"Sikar",    address:"Fatehpur Road",    qualification:"BA",       caste:"General" },
-    { timestamp:"06/03/2024, 11:40:00", name:"Rakesh Jain",       phone:"9098765432", email:"rakesh@jain.com",   age:"26", gender:"Male",   city:"Tonk",     address:"Market Square 3",  qualification:"B.Com",    caste:"OBC" },
-  ];
+let allData = [];
+let filteredData = [];
+let currentPage = 1;
+let sortKey = "timestamp";
+let sortDir = -1;
 
-  function loadData() {
-    document.getElementById("tableBody").innerHTML =
-      '<tr class="loading-row"><td colspan="9">Loading applicants…</td></tr>';
+function checkPin(){
+const val=document.getElementById("pinInput").value;
 
-    allData = [];
-    updateStats();
-    filteredData = [];
-    currentPage = 1;
-    renderTable();
-  }
+if(val===ADMIN_PIN){
 
-  function updateStats() {
-    document.getElementById("statTotal").textContent = allData.length;
-    const now = new Date();
-    const weekAgo = new Date(now - 7 * 86400000);
-    const thisWeek = allData.filter(r => {
-      try { return new Date(r.timestamp) > weekAgo; } catch { return false; }
-    }).length;
-    document.getElementById("statWeek").textContent = thisWeek;
-    const cities = new Set(allData.map(r => r.city?.trim()).filter(Boolean));
-    document.getElementById("statCities").textContent = cities.size;
-    const female = allData.filter(r => r.gender === "Female").length;
-    document.getElementById("statFemale").textContent = female;
-  }
+document.getElementById("pinScreen").style.display="none";
+document.getElementById("dashboard").style.display="flex";
 
-  function filterTable() {
-    const q = document.getElementById("searchInput").value.toLowerCase();
-    const g = document.getElementById("filterGender").value;
-    const c = document.getElementById("filterCaste").value;
-    filteredData = allData.filter(r => {
-      const matchQ = !q || [r.name,r.phone,r.city,r.email].some(v => (v||"").toLowerCase().includes(q));
-      const matchG = !g || r.gender === g;
-      const matchC = !c || r.caste === c;
-      return matchQ && matchG && matchC;
-    });
-    currentPage = 1;
-    renderTable();
-  }
+loadData();
 
-  function sortTable(key) {
-    if (sortKey === key) sortDir *= -1;
-    else { sortKey = key; sortDir = 1; }
-    filteredData.sort((a,b) => {
-      const av = (a[key] || "").toString().toLowerCase();
-      const bv = (b[key] || "").toString().toLowerCase();
-      return av < bv ? -sortDir : av > bv ? sortDir : 0;
-    });
-    renderTable();
-  }
+}else{
 
-  function renderTable() {
-    const tbody = document.getElementById("tableBody");
-    const start = (currentPage - 1) * ROWS_PER_PAGE;
-    const page  = filteredData.slice(start, start + ROWS_PER_PAGE);
+document.getElementById("pinError").style.display="block";
 
-    if (!page.length) {
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="9"><div class="empty-state"><div class="empty-icon">📭</div><p>No applicants found.</p></div></td></tr>';
-      renderPagination();
-      return;
-    }
+}
 
-    tbody.innerHTML = page.map((r, i) => {
-      const idx = start + i + 1;
-      const gBadge = r.gender === "Male" ? "badge-male" : r.gender === "Female" ? "badge-female" : "badge-other";
-      const dateStr = r.timestamp ? r.timestamp.split(",")[0] : "—";
-      return `<tr onclick="showDetail(${start + i})" style="cursor:pointer;">
-        <td><strong>${idx}.</strong> ${esc(r.name)}</td>
-        <td><a class="phone-link" href="tel:${esc(r.phone)}" onclick="event.stopPropagation()">📱 ${esc(r.phone)}</a></td>
-        <td>${esc(r.city)}</td>
-        <td>${esc(r.age)}</td>
-        <td><span class="badge ${gBadge}">${esc(r.gender)}</span></td>
-        <td>${esc(r.qualification)}</td>
-        <td>${esc(r.caste)}</td>
-        <td>${dateStr}</td>
-        <td><button style="background:var(--navy);color:white;border:none;padding:5px 12px;border-radius:4px;font-size:0.77rem;cursor:pointer;" onclick="event.stopPropagation();showDetail(${start+i})">View</button></td>
-      </tr>`;
-    }).join("");
-    renderPagination();
-  }
+}
 
-  function renderPagination() {
-    const total = filteredData.length;
-    const pages = Math.ceil(total / ROWS_PER_PAGE);
-    const start = (currentPage - 1) * ROWS_PER_PAGE + 1;
-    const end   = Math.min(currentPage * ROWS_PER_PAGE, total);
-    document.getElementById("pageInfo").textContent = total
-      ? `Showing ${start}–${end} of ${total} entries`
-      : "No entries found";
+document.getElementById("pinInput").addEventListener("keydown",e=>{
+if(e.key==="Enter") checkPin();
+});
 
-    const container = document.getElementById("pageBtns");
-    container.innerHTML = "";
-    for (let i = 1; i <= pages; i++) {
-      const btn = document.createElement("button");
-      btn.className = "page-btn" + (i === currentPage ? " active" : "");
-      btn.textContent = i;
-      btn.onclick = () => { currentPage = i; renderTable(); };
-      container.appendChild(btn);
-    }
-  }
+function logout(){
 
-  function showDetail(idx) {
-    const r = filteredData[idx];
-    // Find the real index in allData
-    const allIdx = allData.findIndex(d => d.phone === r.phone && d.timestamp === r.timestamp);
-    document.getElementById("modalName").textContent = r.name || "Applicant Details";
-    document.getElementById("modalBody").innerHTML = `
-      ${dRow("Full Name", r.name)}
-      ${dRow("Phone / WhatsApp", `<a href="tel:${esc(r.phone)}" style="color:var(--navy);font-weight:600;">📱 ${esc(r.phone)}</a>`)}
-      ${dRow("Email", r.email || "—")}
-      ${dRow("Age", r.age)}
-      ${dRow("Gender", r.gender)}
-      ${dRow("Caste Category", r.caste)}
-      ${dRow("Qualification", r.qualification)}
-      ${dRow("City", r.city)}
-      ${dRow("Full Address", r.address || "—")}
-      ${dRow("Applied On", r.timestamp || "—")}
-      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
-        <a href="https://wa.me/91${r.phone}" target="_blank" style="display:inline-block;background:#25d366;color:white;padding:10px 20px;border-radius:6px;text-decoration:none;font-size:0.88rem;font-weight:600;">💬 WhatsApp</a>
-        <a href="tel:${r.phone}" style="display:inline-block;background:var(--navy);color:var(--gold2);padding:10px 20px;border-radius:6px;text-decoration:none;font-size:0.88rem;font-weight:600;">📞 Call</a>
-        <button onclick="deleteEntry(${allIdx})" style="background:#e74c3c;color:white;border:none;padding:10px 20px;border-radius:6px;font-size:0.88rem;font-weight:600;cursor:pointer;">🗑 Delete</button>
-      </div>
-    `;
-    document.getElementById("modalOverlay").classList.add("open");
-  }
+document.getElementById("dashboard").style.display="none";
+document.getElementById("pinScreen").style.display="flex";
+document.getElementById("pinInput").value="";
 
-  function deleteEntry(idx) {
-    const r = allData[idx];
-    if (!r) return;
-    if (!confirm(`"${r.name}" কে delete করবে? এটা শুধু dashboard থেকে সরাবে।`)) return;
+}
 
-    // Remove from allData and localStorage
-    allData.splice(idx, 1);
-    const localData = JSON.parse(localStorage.getItem("lic_applications") || "[]");
-    const updated = localData.filter(d => !(d.phone === r.phone && d.timestamp === r.timestamp));
-    localStorage.setItem("lic_applications", JSON.stringify(updated));
+async function loadData(){
 
-    // Update filtered and re-render
-    filterTable();
-    closeModal();
-  }
-  function dRow(label, val) {
-    return `<div class="detail-row"><span class="detail-label">${label}</span><span class="detail-val">${val || "—"}</span></div>`;
-  }
-  function closeModal(e) {
-    if (!e || e.target === document.getElementById("modalOverlay")) {
-      document.getElementById("modalOverlay").classList.remove("open");
-    }
-  }
+document.getElementById("tableBody").innerHTML =
+'<tr class="loading-row"><td colspan="9">Loading applicants...</td></tr>';
 
-  function exportCSV() {
-    if (!filteredData.length) { alert("No data to export."); return; }
-    const headers = ["Timestamp","Name","Phone","Email","Age","Gender","City","Address","Qualification","Caste"];
-    const rows = filteredData.map(r =>
-      [r.timestamp,r.name,r.phone,r.email,r.age,r.gender,r.city,r.address,r.qualification,r.caste]
-        .map(v => `"${(v||"").replace(/"/g,'""')}"`)
-        .join(",")
-    );
-    const csv = [headers.join(","), ...rows].join("\n");
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
-    a.download = "lic_applicants_" + new Date().toISOString().slice(0,10) + ".csv";
-    a.click();
-  }
+try{
 
-  function clearAllData() {
-    if (confirm("সব application data delete করবে? এটা undo করা যাবে না।")) {
-      localStorage.removeItem("lic_applications");
-      allData = [];
-      filteredData = [];
-      updateStats();
-      renderTable();
-      document.querySelector(".topbar h1").textContent = "Applicant Dashboard";
-    }
-  }
+const res = await fetch(SHEET_URL);
+const data = await res.json();
 
-  function esc(s) {
-    if (!s) return "";
-    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  }
+allData = data.map(row=>({
+
+timestamp:row["Timestamp"],
+name:row["Full Name"],
+phone:row["Phone / Whatsapp"],
+email:row["Email Address"],
+age:row["Age"],
+gender:row["Gender"],
+city:row["City"],
+address:row["Full Address"],
+qualification:row["Qualification"],
+caste:row["Caste Category"]
+
+}));
+
+filteredData=[...allData];
+
+updateStats();
+renderTable();
+
+}catch(err){
+
+console.error(err);
+
+document.getElementById("tableBody").innerHTML =
+'<tr class="loading-row"><td colspan="9">Failed to load data</td></tr>';
+
+}
+
+}
+
+function updateStats(){
+
+document.getElementById("statTotal").textContent=allData.length;
+
+const now=new Date();
+const weekAgo=new Date(now-7*86400000);
+
+const thisWeek=allData.filter(r=>{
+try{
+return new Date(r.timestamp)>weekAgo;
+}catch{
+return false;
+}
+}).length;
+
+document.getElementById("statWeek").textContent=thisWeek;
+
+const cities=new Set(allData.map(r=>r.city?.trim()).filter(Boolean));
+
+document.getElementById("statCities").textContent=cities.size;
+
+const female=allData.filter(r=>r.gender==="Female").length;
+
+document.getElementById("statFemale").textContent=female;
+
+}
+
+function filterTable(){
+
+const q=document.getElementById("searchInput").value.toLowerCase();
+const g=document.getElementById("filterGender").value;
+const c=document.getElementById("filterCaste").value;
+
+filteredData=allData.filter(r=>{
+
+const matchQ=!q || [r.name,r.phone,r.city,r.email].some(v=>(v||"").toLowerCase().includes(q));
+
+const matchG=!g || r.gender===g;
+const matchC=!c || r.caste===c;
+
+return matchQ && matchG && matchC;
+
+});
+
+currentPage=1;
+
+renderTable();
+
+}
+
+function sortTable(key){
+
+if(sortKey===key) sortDir*=-1;
+else{
+sortKey=key;
+sortDir=1;
+}
+
+filteredData.sort((a,b)=>{
+
+const av=(a[key]||"").toString().toLowerCase();
+const bv=(b[key]||"").toString().toLowerCase();
+
+return av<bv?-sortDir:av>bv?sortDir:0;
+
+});
+
+renderTable();
+
+}
+
+function renderTable(){
+
+const tbody=document.getElementById("tableBody");
+
+const start=(currentPage-1)*ROWS_PER_PAGE;
+
+const page=filteredData.slice(start,start+ROWS_PER_PAGE);
+
+if(!page.length){
+
+tbody.innerHTML='<tr class="loading-row"><td colspan="9">No applicants found</td></tr>';
+
+renderPagination();
+
+return;
+
+}
+
+tbody.innerHTML=page.map((r,i)=>{
+
+const idx=start+i+1;
+
+const dateStr=r.timestamp?r.timestamp.split(",")[0]:"—";
+
+return `<tr>
+<td><strong>${idx}</strong> ${r.name||""}</td>
+<td>${r.phone||""}</td>
+<td>${r.city||""}</td>
+<td>${r.age||""}</td>
+<td>${r.gender||""}</td>
+<td>${r.qualification||""}</td>
+<td>${r.caste||""}</td>
+<td>${dateStr}</td>
+<td>-</td>
+</tr>`;
+
+}).join("");
+
+renderPagination();
+
+}
+
+function renderPagination(){
+
+const total=filteredData.length;
+
+const pages=Math.ceil(total/ROWS_PER_PAGE);
+
+const start=(currentPage-1)*ROWS_PER_PAGE+1;
+
+const end=Math.min(currentPage*ROWS_PER_PAGE,total);
+
+document.getElementById("pageInfo").textContent=
+total?`Showing ${start}-${end} of ${total} entries`:"No entries";
+
+const container=document.getElementById("pageBtns");
+
+container.innerHTML="";
+
+for(let i=1;i<=pages;i++){
+
+const btn=document.createElement("button");
+
+btn.className="page-btn"+(i===currentPage?" active":"");
+
+btn.textContent=i;
+
+btn.onclick=()=>{
+
+currentPage=i;
+renderTable();
+
+};
+
+container.appendChild(btn);
+
+}
+
+}
+
+function clearAllData(){
+
+alert("Data delete করতে Google Sheet থেকে delete করুন.");
+
+}
+
+setInterval(loadData,8000);
+
 </script>
 
 </body>
